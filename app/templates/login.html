@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Login</h1>
+  <form action="/login" method="post" class="card stack narrow">
+    <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+    <input name="email" placeholder="Email" required />
+    <input name="password" placeholder="Password" type="password" required />
+    <button type="submit">Login</button>
+    <p class="muted">Demo users: user@demo.local / User123! · admin@demo.local / Admin123!</p>
+  </form>
+{% endblock %}

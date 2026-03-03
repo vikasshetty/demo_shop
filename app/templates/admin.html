@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Admin</h1>
+
+  <div class="row gap">
+    <form action="/admin/product/create" method="post" class="card stack grow">
+      <h3>Create product</h3>
+      <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+      <input name="sku" placeholder="SKU" required />
+      <input name="name" placeholder="Name" required />
+      <textarea name="description" placeholder="Description" required></textarea>
+      <input name="price_cents" type="number" placeholder="Price (cents)" required />
+      <input name="image_url" placeholder="Image URL" />
+      <input name="inventory" type="number" placeholder="Inventory" value="0" />
+      <label class="row"><input type="checkbox" name="is_active" value="1" checked /> Active</label>
+      <button type="submit">Create</button>
+    </form>
+
+    <div class="card grow">
+      <h3>Products</h3>
+      <table class="table">
+        <thead><tr><th>SKU</th><th>Name</th><th>Price</th><th>Active</th><th></th></tr></thead>
+        <tbody>
+          {% for p in products %}
+            <tr>
+              <td>{{ p.sku }}</td>
+              <td>{{ p.name }}</td>
+              <td>{{ money(p.price_cents) }}</td>
+              <td>{{ "yes" if p.is_active else "no" }}</td>
+              <td>
+                <form action="/admin/product/toggle" method="post">
+                  <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+                  <input type="hidden" name="product_id" value="{{ p.id }}" />
+                  <button type="submit">Toggle</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

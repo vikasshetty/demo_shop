@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Products</h1>
+
+  {% if q %}
+    <p class="muted">Showing results for “{{ q }}”</p>
+  {% endif %}
+
+  <div class="grid">
+    {% for p in products %}
+      <div class="card">
+        <a href="/product/{{ p.id }}">
+          <img src="{{ p.image_url }}" alt="{{ p.name }}" />
+          <h3>{{ p.name }}</h3>
+        </a>
+        <p class="muted">{{ p.sku }}</p>
+        <p class="price">{{ p.price }}</p>
+
+        <form action="/cart/add" method="post" class="row">
+          <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+          <input type="hidden" name="product_id" value="{{ p.id }}" />
+          <input type="number" name="qty" value="1" min="1" />
+          <button type="submit">Add to cart</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+{% endblock %}

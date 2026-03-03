@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Your orders</h1>
+  {% if placed %}
+    <p class="notice">Order placed successfully. Order ID: {{ placed }}</p>
+  {% endif %}
+
+  {% if not orders %}
+    <p>You have no orders yet.</p>
+  {% else %}
+    {% for o in orders %}
+      <div class="card">
+        <div class="row space">
+          <strong>Order #{{ o.order.id }}</strong>
+          <span class="muted">{{ o.order.created_at }}</span>
+        </div>
+        <div class="muted">Status: {{ o.order.status }} · Total: {{ money(o.order.total_cents) }}</div>
+        <ul class="list">
+          {% for it in o.items %}
+            <li class="row space">
+              <span>{{ it.name }} × {{ it.qty }}</span>
+              <span>{{ money(it.line_total_cents) }}</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="row gap">
+    <img class="hero" src="{{ p.image_url }}" alt="{{ p.name }}" />
+    <div>
+      <h1>{{ p.name }}</h1>
+      <p class="muted">{{ p.sku }}</p>
+      <p class="price">{{ p.price }}</p>
+      <p>{{ p.description }}</p>
+
+      <form action="/cart/add" method="post" class="row">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+        <input type="hidden" name="product_id" value="{{ p.id }}" />
+        <input type="number" name="qty" value="1" min="1" />
+        <button type="submit">Add to cart</button>
+      </form>
+    </div>
+  </div>
+{% endblock %}

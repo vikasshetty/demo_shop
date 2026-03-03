@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Your cart</h1>
+
+  {% if it in cart["cart_items"] %}
+    <p>Your cart is empty. <a href="/">Continue shopping</a>.</p>
+  {% else %}
+    <table class="table">
+      <thead>
+        <tr><th>Item</th><th>Qty</th><th>Line</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for it in cart["cart_items"] %}
+          <tr>
+            <td>
+              <strong><a href="/product/{{ it.id }}">{{ it.name }}</a></strong><br/>
+              <span class="muted">{{ it.sku }} · {{ it.price }}</span>
+            </td>
+            <td>
+              <form action="/cart/update" method="post" class="row">
+                <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+                <input type="hidden" name="product_id" value="{{ it.id }}" />
+                <input type="number" name="qty" min="0" value="{{ it.qty }}" />
+                <button type="submit">Update</button>
+              </form>
+            </td>
+            <td>{{ it.line_total }}</td>
+            <td>
+              <form action="/cart/update" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+                <input type="hidden" name="product_id" value="{{ it.id }}" />
+                <input type="hidden" name="qty" value="0" />
+                <button type="submit">Remove</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div class="row right">
+      <div class="summary">
+        <div class="row space"><span>Subtotal</span><strong>{{ cart.subtotal }}</strong></div>
+        <a class="button" href="/checkout">Checkout</a>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>Checkout</h1>
+
+  <div class="row gap">
+    <div class="card grow">
+      <h3>Shipping</h3>
+      <form action="/checkout" method="post" class="stack">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+        <input name="ship_name" placeholder="Full name" required />
+        <input name="ship_address1" placeholder="Address line 1" required />
+        <input name="ship_address2" placeholder="Address line 2 (optional)" />
+        <div class="row">
+          <input name="ship_city" placeholder="City" required />
+          <input name="ship_state" placeholder="State" required />
+          <input name="ship_zip" placeholder="ZIP" required />
+        </div>
+
+        <h3>Payment</h3>
+        <input name="card_number" placeholder="Card number (demo)" required />
+        <button type="submit">Place order</button>
+      </form>
+      <p class="muted">Payment is simulated; only last 4 digits are stored.</p>
+    </div>
+
+    <div class="card">
+      <h3>Order summary</h3>
+      <ul class="list">
+        {% for it in cart["cart_items"] %}
+          <li class="row space">
+            <span>{{ it.name }} × {{ it.qty }}</span>
+            <span>{{ it.line_total }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+      <hr/>
+      <div class="row space"><span>Subtotal</span><strong>{{ cart.subtotal }}</strong></div>
+      <div class="row space"><span>Shipping</span><strong>{{ shipping }}</strong></div>
+      <div class="row space"><span>Tax</span><strong>{{ tax }}</strong></div>
+      <div class="row space"><span>Total</span><strong>{{ total }}</strong></div>
+    </div>
+  </div>
+{% endblock %}
