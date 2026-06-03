@@ -1,19 +1,64 @@
 {% extends "base.html" %}
 {% block content %}
-  <div class="row gap">
-    <img class="hero" src="{{ p.image_url }}" alt="{{ p.name }}" />
-    <div>
-      <h1>{{ p.name }}</h1>
-      <p class="muted">{{ p.sku }}</p>
-      <p class="price">{{ p.price }}</p>
-      <p>{{ p.description }}</p>
+<div class="page-wrap">
 
-      <form action="/cart/add" method="post" class="row">
+  <nav class="breadcrumb">
+    <a href="/">Home</a>
+    <span style="color:#d1d5db;">/</span>
+    <span>{{ p.name }}</span>
+  </nav>
+
+  <div class="two-col">
+
+    <div class="product-image-wrap">
+      <img src="{{ p.image_url }}" alt="{{ p.name }}" />
+    </div>
+
+    <div class="product-detail">
+      <p class="muted">{{ p.sku }}</p>
+      <h1>{{ p.name }}</h1>
+      <p class="product-price">{{ p.price }}</p>
+      <p class="product-desc">{{ p.description }}</p>
+
+      <form action="/cart/add" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf }}" />
         <input type="hidden" name="product_id" value="{{ p.id }}" />
-        <input type="number" name="qty" value="1" min="1" />
-        <button type="submit">Add to cart</button>
+
+        <div class="qty-stepper">
+          <button type="button" onclick="stepQty(-1)" aria-label="Decrease quantity">&minus;</button>
+          <input type="number" name="qty" id="qty-input" value="1" min="1" />
+          <button type="button" onclick="stepQty(1)" aria-label="Increase quantity">+</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="padding:14px 32px;font-size:16px;">
+          Add to Cart
+        </button>
       </form>
+
+      <div class="shipping-info">
+        <div class="shipping-info-item">
+          <span>&#128666;</span>
+          <span><strong>Free shipping</strong> on orders over $50</span>
+        </div>
+        <div class="shipping-info-item">
+          <span>&#128260;</span>
+          <span><strong>Easy returns</strong> within 30 days</span>
+        </div>
+        <div class="shipping-info-item">
+          <span>&#128274;</span>
+          <span><strong>Secure checkout</strong> &mdash; demo payment only</span>
+        </div>
+      </div>
     </div>
+
   </div>
+</div>
+
+<script>
+  function stepQty(delta) {
+    var el = document.getElementById('qty-input');
+    var val = parseInt(el.value, 10) || 1;
+    el.value = Math.max(1, val + delta);
+  }
+</script>
 {% endblock %}

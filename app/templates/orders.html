@@ -1,29 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Your orders</h1>
+<div class="page-wrap">
+
+  <div class="page-header">
+    <h1>Your Orders</h1>
+    <p>Track and manage your purchases</p>
+  </div>
+
   {% if placed %}
-    <p class="notice">Order placed successfully. Order ID: {{ placed }}</p>
+    <div class="notice">
+      <span style="font-size:18px;">&#10003;</span>
+      <span>Order placed successfully! &nbsp;<strong>Order ID: {{ placed }}</strong></span>
+    </div>
   {% endif %}
 
   {% if not orders %}
-    <p>You have no orders yet.</p>
+    <div class="empty-state">
+      <div style="font-size:48px;">&#128230;</div>
+      <h2>No orders yet</h2>
+      <p>When you place an order it will appear here.</p>
+      <a href="/" class="btn btn-primary" style="margin-top:16px;">Start Shopping</a>
+    </div>
   {% else %}
     {% for o in orders %}
-      <div class="card">
-        <div class="row space">
-          <strong>Order #{{ o.order.id }}</strong>
-          <span class="muted">{{ o.order.created_at }}</span>
+      <div class="order-card">
+        <div class="order-card-header">
+          <div>
+            <strong style="font-size:16px;">Order #{{ o.order.id }}</strong>
+            <span class="muted" style="margin-left:12px;font-size:13px;">{{ o.order.created_at }}</span>
+          </div>
+          <span class="status-badge
+            {% if o.order.status == 'placed' %}status-placed
+            {% elif o.order.status == 'shipped' %}status-shipped
+            {% elif o.order.status == 'delivered' %}status-delivered
+            {% else %}status-placed{% endif %}">
+            {{ o.order.status }}
+          </span>
         </div>
-        <div class="muted">Status: {{ o.order.status }} · Total: {{ money(o.order.total_cents) }}</div>
-        <ul class="list">
+
+        <div class="order-card-body">
           {% for it in o.items %}
-            <li class="row space">
-              <span>{{ it.name }} × {{ it.qty }}</span>
-              <span>{{ money(it.line_total_cents) }}</span>
-            </li>
+            <div class="order-item-row">
+              <span>{{ it.name }} &times; {{ it.qty }}</span>
+              <span class="font-bold">{{ money(it.line_total_cents) }}</span>
+            </div>
           {% endfor %}
-        </ul>
+        </div>
+
+        <div class="order-card-footer">
+          <span>Total &nbsp;&nbsp;<strong>{{ money(o.order.total_cents) }}</strong></span>
+        </div>
       </div>
     {% endfor %}
   {% endif %}
+
+</div>
 {% endblock %}

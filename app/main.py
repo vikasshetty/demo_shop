@@ -37,11 +37,6 @@ async def add_security_headers(request: Request, call_next):
         response.headers["X-Frame-Options"] = "DENY"
         response.headers["Referrer-Policy"] = "no-referrer"
         response.headers["Permissions-Policy"] = "geolocation=()"
-        response.headers["Content-Security-Policy"] = (
-            "default-src 'self'; "
-            "img-src 'self' https: data:; "
-            "style-src 'self' 'unsafe-inline';"
-        )
     return response
 
 def money(cents: int) -> str:

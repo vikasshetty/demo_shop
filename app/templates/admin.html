@@ -1,43 +1,100 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Admin</h1>
+<div class="page-wrap">
 
-  <div class="row gap">
-    <form action="/admin/product/create" method="post" class="card stack grow">
-      <h3>Create product</h3>
-      <input type="hidden" name="csrf_token" value="{{ csrf }}" />
-      <input name="sku" placeholder="SKU" required />
-      <input name="name" placeholder="Name" required />
-      <textarea name="description" placeholder="Description" required></textarea>
-      <input name="price_cents" type="number" placeholder="Price (cents)" required />
-      <input name="image_url" placeholder="Image URL" />
-      <input name="inventory" type="number" placeholder="Inventory" value="0" />
-      <label class="row"><input type="checkbox" name="is_active" value="1" checked /> Active</label>
-      <button type="submit">Create</button>
-    </form>
-
-    <div class="card grow">
-      <h3>Products</h3>
-      <table class="table">
-        <thead><tr><th>SKU</th><th>Name</th><th>Price</th><th>Active</th><th></th></tr></thead>
-        <tbody>
-          {% for p in products %}
-            <tr>
-              <td>{{ p.sku }}</td>
-              <td>{{ p.name }}</td>
-              <td>{{ money(p.price_cents) }}</td>
-              <td>{{ "yes" if p.is_active else "no" }}</td>
-              <td>
-                <form action="/admin/product/toggle" method="post">
-                  <input type="hidden" name="csrf_token" value="{{ csrf }}" />
-                  <input type="hidden" name="product_id" value="{{ p.id }}" />
-                  <button type="submit">Toggle</button>
-                </form>
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+  <div class="page-header">
+    <h1>Admin</h1>
+    <p>Manage your product catalog</p>
   </div>
+
+  <div class="admin-layout">
+
+    <div class="surface surface-body sticky-top">
+      <p class="form-section-title" style="margin-top:0;">Create Product</p>
+      <form action="/admin/product/create" method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+
+        <div class="form-group">
+          <label for="sku">SKU</label>
+          <input id="sku" name="sku" placeholder="PROD-001" required />
+        </div>
+
+        <div class="form-group">
+          <label for="name">Product Name</label>
+          <input id="name" name="name" placeholder="Classic White Tee" required />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" placeholder="Product description&hellip;" rows="3" required style="resize:vertical;"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="price_cents">Price (cents)</label>
+          <input id="price_cents" name="price_cents" type="number" placeholder="2999" required />
+        </div>
+
+        <div class="form-group">
+          <label for="image_url">Image URL <span style="font-weight:400;color:var(--color-text-muted);">(optional)</span></label>
+          <input id="image_url" name="image_url" placeholder="https://example.com/image.jpg" />
+        </div>
+
+        <div class="form-group">
+          <label for="inventory">Inventory</label>
+          <input id="inventory" name="inventory" type="number" placeholder="0" value="0" />
+        </div>
+
+        <div class="form-group" style="flex-direction:row;align-items:center;gap:10px;margin-bottom:20px;">
+          <input type="checkbox" id="is_active" name="is_active" value="1" checked style="width:16px;height:16px;margin:0;padding:0;border-radius:4px;" />
+          <label for="is_active" style="margin:0;font-size:14px;cursor:pointer;">Active &mdash; visible to customers</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full">Create Product</button>
+      </form>
+    </div>
+
+    <div class="surface" style="overflow:hidden;">
+      <div style="padding:20px 24px 16px;border-bottom:1px solid var(--color-border);">
+        <h3 style="margin:0;font-size:18px;font-weight:800;">Products</h3>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in products %}
+              <tr>
+                <td class="muted">{{ p.sku }}</td>
+                <td style="font-weight:600;">{{ p.name }}</td>
+                <td>{{ money(p.price_cents) }}</td>
+                <td>
+                  {% if p.is_active %}
+                    <span class="pill-active">Active</span>
+                  {% else %}
+                    <span class="pill-inactive">Inactive</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <form action="/admin/product/toggle" method="post" class="inline-form">
+                    <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+                    <input type="hidden" name="product_id" value="{{ p.id }}" />
+                    <button type="submit" class="btn btn-outline btn-sm">Toggle</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

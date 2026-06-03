@@ -1,43 +1,101 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Checkout</h1>
+<div class="page-wrap">
 
-  <div class="row gap">
-    <div class="card grow">
-      <h3>Shipping</h3>
-      <form action="/checkout" method="post" class="stack">
+  <div class="page-header">
+    <h1>Checkout</h1>
+    <p>Complete your order below</p>
+  </div>
+
+  <div class="two-col-wide">
+
+    <div class="surface surface-body">
+      <form action="/checkout" method="post">
         <input type="hidden" name="csrf_token" value="{{ csrf }}" />
-        <input name="ship_name" placeholder="Full name" required />
-        <input name="ship_address1" placeholder="Address line 1" required />
-        <input name="ship_address2" placeholder="Address line 2 (optional)" />
-        <div class="row">
-          <input name="ship_city" placeholder="City" required />
-          <input name="ship_state" placeholder="State" required />
-          <input name="ship_zip" placeholder="ZIP" required />
+
+        <p class="form-section-title">Shipping Address</p>
+
+        <div class="form-group">
+          <label for="ship_name">Full Name</label>
+          <input id="ship_name" name="ship_name" placeholder="Jane Smith" required />
         </div>
 
-        <h3>Payment</h3>
-        <input name="card_number" placeholder="Card number (demo)" required />
-        <button type="submit">Place order</button>
+        <div class="form-group">
+          <label for="ship_address1">Address Line 1</label>
+          <input id="ship_address1" name="ship_address1" placeholder="123 Main St" required />
+        </div>
+
+        <div class="form-group">
+          <label for="ship_address2">Address Line 2 <span style="font-weight:400;color:var(--color-text-muted);">(optional)</span></label>
+          <input id="ship_address2" name="ship_address2" placeholder="Apt, suite, unit, etc." />
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="ship_city">City</label>
+            <input id="ship_city" name="ship_city" placeholder="New York" required />
+          </div>
+          <div class="form-group">
+            <label for="ship_state">State</label>
+            <input id="ship_state" name="ship_state" placeholder="NY" required />
+          </div>
+        </div>
+
+        <div class="form-group" style="max-width:180px;">
+          <label for="ship_zip">ZIP Code</label>
+          <input id="ship_zip" name="ship_zip" placeholder="10001" required />
+        </div>
+
+        <p class="form-section-title" style="margin-top:28px;">Payment</p>
+
+        <div class="form-group">
+          <label for="card_number">Card Number <span style="font-weight:400;color:var(--color-text-muted);">(demo)</span></label>
+          <input id="card_number" name="card_number" placeholder="4242 4242 4242 4242" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" style="padding:14px;font-size:16px;margin-top:8px;">
+          &#128274; Place Order
+        </button>
+
+        <div class="secure-notice">
+          <span>&#128274;</span>
+          <span>Payment is simulated. Only the last 4 digits are stored.</span>
+        </div>
       </form>
-      <p class="muted">Payment is simulated; only last 4 digits are stored.</p>
     </div>
 
-    <div class="card">
-      <h3>Order summary</h3>
-      <ul class="list">
+    <div class="sticky-top">
+      <div class="surface surface-body">
+        <h3 style="margin:0 0 18px;font-size:18px;font-weight:800;">Order Summary</h3>
+
         {% for it in cart["cart_items"] %}
-          <li class="row space">
-            <span>{{ it.name }} × {{ it.qty }}</span>
-            <span>{{ it.line_total }}</span>
-          </li>
+          <div class="order-summary-item">
+            <span class="item-name">{{ it.name }} &times; {{ it.qty }}</span>
+            <span class="item-price">{{ it.line_total }}</span>
+          </div>
         {% endfor %}
-      </ul>
-      <hr/>
-      <div class="row space"><span>Subtotal</span><strong>{{ cart.subtotal }}</strong></div>
-      <div class="row space"><span>Shipping</span><strong>{{ shipping }}</strong></div>
-      <div class="row space"><span>Tax</span><strong>{{ tax }}</strong></div>
-      <div class="row space"><span>Total</span><strong>{{ total }}</strong></div>
+
+        <hr class="divider" />
+
+        <div class="order-summary-row">
+          <span>Subtotal</span>
+          <span>{{ cart.subtotal }}</span>
+        </div>
+        <div class="order-summary-row">
+          <span>Shipping</span>
+          <span>{{ shipping }}</span>
+        </div>
+        <div class="order-summary-row">
+          <span>Tax</span>
+          <span>{{ tax }}</span>
+        </div>
+        <div class="order-summary-row total">
+          <span>Total</span>
+          <span>{{ total }}</span>
+        </div>
+      </div>
     </div>
+
   </div>
+</div>
 {% endblock %}

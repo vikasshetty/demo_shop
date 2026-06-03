@@ -1,28 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
-  <h1>Products</h1>
 
-  {% if q %}
-    <p class="muted">Showing results for “{{ q }}”</p>
-  {% endif %}
+  <section class="hero">
+    <h1>Style for every season.</h1>
+    <p>Shop our curated collection of premium products&mdash;quality you can feel, prices you'll love.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn btn-primary">Shop Now</a>
+      <a href="/?q=new" class="btn btn-secondary">New Arrivals</a>
+    </div>
+  </section>
 
-  <div class="grid">
-    {% for p in products %}
-      <div class="card">
-        <a href="/product/{{ p.id }}">
-          <img src="{{ p.image_url }}" alt="{{ p.name }}" />
-          <h3>{{ p.name }}</h3>
-        </a>
-        <p class="muted">{{ p.sku }}</p>
-        <p class="price">{{ p.price }}</p>
+  <div class="products-section" id="products">
+    <div class="section-header">
+      <h2>
+        {% if q %}
+          Results for &ldquo;{{ q }}&rdquo;
+        {% else %}
+          Featured Products
+        {% endif %}
+      </h2>
+      {% if q %}
+        <a href="/" class="btn btn-outline btn-sm">Clear search</a>
+      {% endif %}
+    </div>
 
-        <form action="/cart/add" method="post" class="row">
-          <input type="hidden" name="csrf_token" value="{{ csrf }}" />
-          <input type="hidden" name="product_id" value="{{ p.id }}" />
-          <input type="number" name="qty" value="1" min="1" />
-          <button type="submit">Add to cart</button>
-        </form>
+    {% if not products %}
+      <div class="empty-state">
+        <h2>No products found</h2>
+        <p>Try a different search term or <a href="/">browse all products</a>.</p>
       </div>
-    {% endfor %}
+    {% else %}
+      <div class="grid">
+        {% for p in products %}
+          <div class="card">
+            <a href="/product/{{ p.id }}">
+              <div class="card-img-wrap">
+                <img src="{{ p.image_url }}" alt="{{ p.name }}" loading="lazy" />
+              </div>
+            </a>
+            <div class="card-body">
+              <h3><a href="/product/{{ p.id }}">{{ p.name }}</a></h3>
+              <p class="muted">{{ p.sku }}</p>
+              <p class="price">{{ p.price }}</p>
+              <form action="/cart/add" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf }}" />
+                <input type="hidden" name="product_id" value="{{ p.id }}" />
+                <input type="hidden" name="qty" value="1" />
+                <button type="submit" class="btn btn-primary btn-full">Add to Cart</button>
+              </form>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
+
 {% endblock %}
